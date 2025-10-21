@@ -27,11 +27,15 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         });
       });
     
-    return true; // Keep message channel open for async response
+      return true; // Keep message channel open for async response
+  } else if (msg.type === 'read_content') {
+    const selector = msg.selector || 'body';
+    const element = document.querySelector(selector);
+    const content = element ? element.textContent.trim() : 'Element not found';
+    sendResponse({ success: true, content: content });
+    return true;
   }
-});
-
-// Listen for messages from the page (window.postMessage)
+});// Listen for messages from the page (window.postMessage)
 window.addEventListener('message', (event) => {
   // Only accept messages from same origin
   if (event.origin !== window.location.origin) return;
@@ -48,6 +52,15 @@ window.addEventListener('message', (event) => {
       type: 'add_prompts',
       prompts: event.data.prompts
     });
+  } else if (event.data && event.data.type === 'MCP_READ_CONTENT') {
+    // Handle read content requests
+    const selector = event.data.selector || 'body';
+    const element = document.querySelector(selector);
+    const content = element ? element.textContent : 'Element not found';
+    window.postMessage({
+      type: 'MCP_CONTENT_RESPONSE',
+      content: content
+    }, '*');
   }
 });
 

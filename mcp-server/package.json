@@ -1,0 +1,31 @@
+{
+  "name": "@capedigital/midjourney-mcp-server",
+  "version": "0.2.0",
+  "description": "MCP server for controlling Midjourney through browser extension",
+  "type": "module",
+  "main": "index.js",
+  "bin": {
+    "midjourney-mcp": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "midjourney",
+    "ai-tools",
+    "browser-automation"
+  ],
+  "author": "capedigital",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.5.0",
+    "express": "^4.18.2",
+    "ws": "^8.16.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

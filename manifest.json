@@ -5,7 +5,8 @@
   "description": "Injects and submits prompts to Midjourney automatically with queue management.",
   "permissions": ["scripting", "activeTab", "storage"],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "content_scripts": [
     {

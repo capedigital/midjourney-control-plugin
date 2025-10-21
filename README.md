@@ -47,17 +47,18 @@ A Chrome extension that automates Midjourney prompt submissions with queue manag
 
 **That's it!** The extension works completely standalone. No server, no terminal, no npm needed.
 
-### Optional: API Server for Advanced Users
+### Advanced: MCP Server for AI Assistant Integration
 
-If you want ChatGPT or other tools to send prompts automatically, you can optionally run the local API server:
+Want Claude or other AI assistants to control Midjourney directly? Install the optional MCP server:
 
-```bash
-cd "Midjourney Control Plugin"
-npm install
-npm start
-```
+1. Install dependencies: `cd mcp-server && npm install`
+2. Add to Claude Desktop config (see [mcp-server/QUICKSTART.md](mcp-server/QUICKSTART.md))
+3. Restart Claude
+4. Open Midjourney.com - extension auto-connects!
 
-**But this is 100% optional!** The extension works great without it.
+Now Claude can submit prompts, check status, and control your queue automatically!
+
+**Or use the simple REST API** (see Advanced Setup below)
 
 ## Usage
 
@@ -85,9 +86,20 @@ window.postMessage({
 }, "*");
 ```
 
-### Method 3: ChatGPT Integration (Requires Optional API Server)
+### Method 3: AI Assistant Integration
 
-**Note**: This feature requires the optional API server to be running (see Advanced Setup below).
+#### Option A: MCP Server (Recommended for Claude)
+
+The extension auto-connects to an MCP server if one is running. See [mcp-server/QUICKSTART.md](mcp-server/QUICKSTART.md).
+
+Once set up, just tell Claude:
+> "Generate 5 prompts for fantasy landscapes and submit them to Midjourney"
+
+Claude will use the MCP tools to control your browser directly!
+
+#### Option B: REST API (For ChatGPT/Custom Scripts)
+
+**Note**: This requires the optional REST API server (see Advanced Setup below).
 
 Once the server is running, just tell ChatGPT naturally:
 

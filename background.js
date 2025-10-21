@@ -1,4 +1,5 @@
 // Background service worker for Midjourney Control Plugin
+// Supports both standalone mode and MCP server mode
 
 const DEFAULT_DELAY = 20000; // 20 seconds between submissions
 let promptQueue = [];
@@ -7,6 +8,129 @@ let settings = {
   delay: DEFAULT_DELAY,
   autoSubmit: true
 };
+
+// MCP WebSocket connection
+let mcpSocket = null;
+const MCP_SERVER_URL = 'ws://127.0.0.1:43111';
+
+// Try to connect to MCP server (optional - works without it)
+function connectToMCP() {
+  if (mcpSocket && mcpSocket.readyState === WebSocket.OPEN) {
+    return;
+  }
+
+  try {
+    mcpSocket = new WebSocket(MCP_SERVER_URL);
+    
+    mcpSocket.onopen = () => {
+      console.log('✅ Connected to MCP server');
+      notifyMCPQueueUpdate();
+    };
+    
+    mcpSocket.onclose = () => {
+      console.log('MCP server not available (this is OK - extension works standalone)');
+      mcpSocket = null;
+    };
+    
+    mcpSocket.onerror = () => {
+      // Silently fail - MCP is optional
+      mcpSocket = null;
+    };
+    
+    mcpSocket.onmessage = (event) => {
+      try {
+        const command = JSON.parse(event.data);
+        handleMCPCommand(command);
+      } catch (error) {
+        console.error('Error handling MCP message:', error);
+      }
+    };
+  } catch (error) {
+    // MCP server not running - that's fine
+  }
+}
+
+// Handle commands from MCP server
+async function handleMCPCommand(command) {
+  let response = { success: true };
+  
+  try {
+    switch (command.type) {
+      case 'add_prompt':
+        addPromptToQueue(command.prompt);
+        response.queueLength = promptQueue.length;
+        break;
+        
+      case 'add_prompts':
+        if (Array.isArray(command.prompts)) {
+          command.prompts.forEach(p => addPromptToQueue(p));
+        }
+        response.queueLength = promptQueue.length;
+        break;
+        
+      case 'get_queue':
+        response.queue = promptQueue;
+        response.isProcessing = isProcessing;
+        break;
+        
+      case 'clear_queue':
+        promptQueue = [];
+        saveQueue();
+        break;
+        
+      case 'update_settings':
+        settings = { ...settings, ...command.settings };
+        chrome.storage.local.set({ settings });
+        break;
+        
+      case 'read_content':
+        response.content = await readPageContent(command.selector);
+        break;
+        
+      default:
+        throw new Error(`Unknown command: ${command.type}`);
+    }
+  } catch (error) {
+    response = { success: false, error: error.message };
+  }
+  
+  if (mcpSocket && mcpSocket.readyState === WebSocket.OPEN) {
+    mcpSocket.send(JSON.stringify(response));
+  }
+}
+
+// Send message to MCP server (if connected)
+function notifyMCPQueueUpdate() {
+  if (mcpSocket && mcpSocket.readyState === WebSocket.OPEN) {
+    mcpSocket.send(JSON.stringify({
+      type: 'queue_update',
+      queue: promptQueue,
+      isProcessing: isProcessing
+    }));
+  }
+}
+
+// Read content from page
+async function readPageContent(selector) {
+  return new Promise((resolve) => {
+    chrome.tabs.query({ url: 'https://www.midjourney.com/*' }, (tabs) => {
+      if (tabs.length === 0) {
+        resolve('No Midjourney tab open');
+        return;
+      }
+      
+      chrome.tabs.sendMessage(tabs[0].id, {
+        type: 'read_content',
+        selector: selector
+      }, (response) => {
+        resolve(response?.content || 'Could not read content');
+      });
+    });
+  });
+}
+
+// Try to connect to MCP server on startup
+connectToMCP();
 
 // Load settings from storage on startup
 chrome.storage.local.get(['settings', 'promptQueue'], (result) => {
@@ -184,8 +308,9 @@ function handleSubmissionComplete(success, error) {
   }
 }
 
-// Notify popup and other listeners of queue updates
+// Notify popup and MCP of queue updates
 function notifyQueueUpdate() {
+  // Notify popup
   chrome.runtime.sendMessage({
     type: 'queue_updated',
     queue: promptQueue,
@@ -193,6 +318,9 @@ function notifyQueueUpdate() {
   }).catch(() => {
     // Popup might not be open, ignore errors
   });
+  
+  // Notify MCP server if connected
+  notifyMCPQueueUpdate();
 }
 
 // Utility sleep function
