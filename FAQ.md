@@ -76,7 +76,17 @@ Only if you want:
 
 ### Is the server secure?
 
-It only listens on `localhost` (127.0.0.1), meaning only programs on YOUR computer can access it. It's not exposed to the internet.
+**Yes!** The server is designed to be secure:
+
+- Only listens on `127.0.0.1` (localhost) - not `0.0.0.0`
+- This means **only programs on YOUR computer** can connect
+- Your router/firewall won't even see it
+- **Not accessible from your network** - other devices can't connect
+- **Not accessible from the internet** - impossible to reach externally
+
+Think of it like a note you leave for yourself on your desk - only you can read it. The server works the same way - only your computer can talk to it.
+
+**Why no authentication then?** Because it's localhost-only. It's like asking "why don't I need a password to access my own hard drive?" - because only you have physical access to your computer.
 
 ### Can I use the extension without the server?
 

@@ -111,7 +111,9 @@ If you want to integrate with ChatGPT or other external tools:
 4. Run: `npm install` (first time only)
 5. Run: `npm start`
 
-The server will start on `http://localhost:43110`
+The server will start on `http://localhost:43110` (localhost-only for security)
+
+**🔒 Security Note**: The server only accepts connections from your own computer (localhost). It's not accessible from your network or the internet, making it safe to run.
 
 ### API Endpoints
 

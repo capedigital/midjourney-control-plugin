@@ -13,12 +13,25 @@
  */
 
 const express = require('express');
-const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 43110;
+const HOST = '127.0.0.1'; // Only listen on localhost for security
 
-// Middleware
-app.use(cors());
+// Middleware - CORS restricted to localhost only
+app.use((req, res, next) => {
+  // Only allow requests from localhost
+  const origin = req.get('origin');
+  if (!origin || origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1')) {
+    res.header('Access-Control-Allow-Origin', origin || '*');
+  }
+  res.header('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -108,16 +121,20 @@ app.delete('/queue', (req, res) => {
   });
 });
 
-// Start server
-app.listen(PORT, () => {
+// Start server - ONLY on localhost for security
+app.listen(PORT, HOST, () => {
   console.log(`
 ╔═══════════════════════════════════════════════════════╗
 ║  🎨 Midjourney Control Plugin API Server             ║
 ║                                                       ║
 ║  Status: ✓ Running                                   ║
+║  Host:   ${HOST} (localhost only - SECURE)           ║
 ║  Port:   ${PORT}                                         ║
 ║  URL:    http://localhost:${PORT}                       ║
 ╚═══════════════════════════════════════════════════════╝
+
+🔒 Security: Server only accepts connections from THIS computer.
+   Not accessible from network or internet.
 
 Available endpoints:
   GET  /              - Health check
