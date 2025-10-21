@@ -37,4 +37,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ✨ Clean, modern UI
 - 🛡️ Error recovery
 
-[0.1.0]: https://github.com/YOUR-USERNAME/midjourney-control-plugin/releases/tag/v0.1.0
+[0.1.0]: https://github.com/capedigital/midjourney-control-plugin/releases/tag/v0.1.0

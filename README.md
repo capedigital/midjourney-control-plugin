@@ -220,7 +220,7 @@ Midjourney Control Plugin/
 
 ## 🤝 Contributing
 
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/YOUR-USERNAME/midjourney-control-plugin/issues).
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/capedigital/midjourney-control-plugin/issues).
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
