@@ -190,11 +190,13 @@ This is intentional and secure!
 | Feature | REST API (ChatGPT) | MCP Server (Claude) |
 |---------|-------------------|---------------------|
 | Best For | ChatGPT with browser | Claude Desktop |
-| Setup | `npm start` | MCP config file |
-| Protocol | HTTP/REST | stdio/MCP |
-| ChatGPT Support | ✅ Perfect | N/A |
-| Claude Support | ⚠️ Manual | ✅ Native |
+| ChatGPT Support | ✅ Yes (HTTP requests) | ❌ No (ChatGPT doesn't support MCP) |
+| Claude Support | ⚠️ Manual commands | ✅ Native integration |
 | Browser AI | ✅ Great | ❌ No |
+| Protocol | HTTP/REST | stdio/MCP |
+| Setup | `npm start` | MCP config file |
+
+**ChatGPT cannot use MCP** - it doesn't support the Model Context Protocol. But that's fine! ChatGPT can make HTTP requests directly, which is why the REST API works perfectly.
 
 **Use REST API for ChatGPT, use MCP for Claude Desktop!**
 

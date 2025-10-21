@@ -52,22 +52,21 @@ A Chrome extension that automates Midjourney prompt submissions with queue manag
 
 ### Advanced: AI Assistant Integration
 
-Want ChatGPT, Claude, or other AI assistants to control Midjourney directly? Two options:
+Want AI assistants to control Midjourney directly? We have two integration methods:
 
-**Option A: REST API** (Recommended for ChatGPT with Atlas browser)
-1. Run: `npm start` (from project root)
-2. ChatGPT can now POST to `http://localhost:43110`
-3. See [CHATGPT_ATLAS.md](CHATGPT_ATLAS.md) for detailed examples
+**Option A: REST API** (For ChatGPT, browser-based AI, custom scripts)
+- **Best for ChatGPT** - ChatGPT doesn't support MCP, but can make HTTP requests!
+- Run: `npm start` (from project root)
+- ChatGPT can POST to `http://localhost:43110`
+- See [CHATGPT_ATLAS.md](CHATGPT_ATLAS.md) for detailed examples
 
-**Option B: MCP Server** (For Claude Desktop, Cline, etc.)
-1. Install dependencies: `cd mcp-server && npm install`
-2. Add to your AI's MCP config (see [mcp-server/QUICKSTART.md](mcp-server/QUICKSTART.md))
-3. Restart your AI tool
-4. Open Midjourney.com - extension auto-connects!
+**Option B: MCP Server** (For Claude Desktop, Cline, Cursor)
+- **Not for ChatGPT** - ChatGPT doesn't support the Model Context Protocol
+- Best for: Claude Desktop and MCP-compatible tools
+- Install: `cd mcp-server && npm install`
+- See [mcp-server/QUICKSTART.md](mcp-server/QUICKSTART.md)
 
-Now AI can submit prompts, check status, and control your queue automatically!
-
-**💡 Perfect for ChatGPT**: Just tell it to POST to localhost:43110 - it'll handle everything!
+**💡 ChatGPT Users**: Use Option A (REST API). Just tell ChatGPT to POST to localhost:43110!
 
 ## Usage
 
