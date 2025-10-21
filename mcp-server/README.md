@@ -2,7 +2,9 @@
 
 **Model Context Protocol server for controlling Midjourney through your browser.**
 
-This turns your browser into a controllable tool that AI assistants (like Claude) can use directly!
+This turns your browser into a controllable tool that AI assistants can use directly!
+
+**Note**: For ChatGPT users, see the REST API option in the main README instead. This MCP server is designed for desktop AI tools like Claude Desktop, Cline, Cursor, etc.
 
 ## What is MCP?
 

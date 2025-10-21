@@ -1,8 +1,11 @@
 # MCP Server Quick Start
 
+> **Using ChatGPT?** You probably want the REST API instead! See the main README.  
+> This MCP server is for desktop AI tools like Claude Desktop, Cline, Cursor, etc.
+
 ## What You Get
 
-With the MCP server, AI assistants like Claude can **directly control your browser**:
+With the MCP server, desktop AI assistants can **directly control your browser**:
 
 - Submit prompts to Midjourney
 - Check queue status  

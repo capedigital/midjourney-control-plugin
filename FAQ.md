@@ -67,12 +67,13 @@ Make sure:
 
 ### Why would I want the API server?
 
-Only if you want:
-- ChatGPT to automatically send prompts to Midjourney
-- External tools/scripts to submit prompts
-- Advanced automation workflows
+Great for:
+- **ChatGPT integration** - ChatGPT can POST prompts directly to the API
+- **Custom scripts** - Automate prompt submission from your own tools
+- **Browser-based AI** - Tools like ChatGPT with Atlas browser can control Midjourney
+- **Advanced workflows** - Build your own automation
 
-**Most users don't need this!**
+**Most users don't need this!** The extension works perfectly standalone.
 
 ### Is the server secure?
 

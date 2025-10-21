@@ -1,16 +1,21 @@
 # ChatGPT Integration Guide
 
+## ChatGPT with Browser Access (Atlas, etc.)
+
+**Perfect for ChatGPT users!** ChatGPT can directly POST to your local API.
+
 ## Quick Start
 
-Just tell ChatGPT:
+1. Start the API server: `npm start`
+2. Tell ChatGPT:
 
-> "Send these prompts to Midjourney using my plugin"
+> "Generate 5 cyberpunk prompts and POST them to http://localhost:43110/submit-batch"
 
-or
+or just:
 
-> "Generate 5 prompts and send them to my Midjourney plugin"
+> "Send these to my Midjourney plugin at localhost:43110"
 
-ChatGPT will automatically use the local API at `http://localhost:43110/submit-batch`
+ChatGPT will automatically format the JSON and submit!
 
 ## How It Works
 
@@ -35,10 +40,42 @@ The Midjourney Control Plugin runs a local API server that accepts prompts via H
 - Send POST requests to `/submit` for a single prompt
 - The plugin will automatically queue and submit them to Midjourney with proper delays
 
-## Example Conversation
+## Example Conversations
 
-**You**: "Generate 5 cyberpunk city prompts and send them to my Midjourney plugin"
+### Basic Usage
 
-**ChatGPT**: Will generate prompts and POST them to `http://localhost:43110/submit-batch`
+**You**: "Generate 5 cyberpunk city prompts and POST them to localhost:43110/submit-batch"
 
-That's it! No need to remember complex commands.
+**ChatGPT**: 
+```
+I'll generate 5 cyberpunk city prompts and submit them to your Midjourney plugin.
+
+[Makes POST request to http://localhost:43110/submit-batch]
+
+✅ Successfully submitted 5 prompts:
+1. Neon-lit megacity with flying vehicles...
+2. Dystopian urban sprawl with holographic ads...
+[etc.]
+```
+
+### Natural Language
+
+**You**: "Create 3 fantasy landscape prompts and send to my Midjourney plugin"
+
+**ChatGPT**: Will understand "my Midjourney plugin" means localhost:43110 and POST the prompts automatically!
+
+### Check Status
+
+**You**: "What's in my Midjourney queue?"
+
+**ChatGPT**: 
+```
+[Makes GET request to http://localhost:43110/queue]
+
+Your queue has 3 pending prompts:
+1. Ethereal fantasy landscape...
+2. Mystical forest...
+3. Ancient ruins...
+```
+
+That's it! ChatGPT handles all the API calls for you.

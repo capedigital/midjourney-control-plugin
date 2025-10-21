@@ -15,7 +15,9 @@ A Chrome extension that automates Midjourney prompt submissions with queue manag
 3. Add prompts via the popup or browser console
 4. Watch them submit automatically with smart delays
 
-**That's it!** Optionally enable API server for ChatGPT integration.
+**Bonus**: Works with ChatGPT! Start the API server and ChatGPT can submit prompts directly.
+
+**That's it!** Optionally enable AI integration for ChatGPT or Claude.
 
 ## Features
 
@@ -26,7 +28,8 @@ A Chrome extension that automates Midjourney prompt submissions with queue manag
 🔄 **Browser Console** - Direct integration via developer console  
 💾 **Persistent Storage** - Queue survives browser restarts  
 🎨 **Zero Setup** - Works immediately, no server or terminal needed  
-🌐 **Optional API** - Advanced users can enable ChatGPT integration  
+🤖 **ChatGPT Ready** - ChatGPT can POST prompts directly to local API  
+🌐 **MCP Support** - Optional MCP server for Claude Desktop  
 
 ## Installation
 
@@ -47,18 +50,24 @@ A Chrome extension that automates Midjourney prompt submissions with queue manag
 
 **That's it!** The extension works completely standalone. No server, no terminal, no npm needed.
 
-### Advanced: MCP Server for AI Assistant Integration
+### Advanced: AI Assistant Integration
 
-Want Claude or other AI assistants to control Midjourney directly? Install the optional MCP server:
+Want ChatGPT, Claude, or other AI assistants to control Midjourney directly? Two options:
 
+**Option A: REST API** (Recommended for ChatGPT with Atlas browser)
+1. Run: `npm start` (from project root)
+2. ChatGPT can now POST to `http://localhost:43110`
+3. See [CHATGPT_ATLAS.md](CHATGPT_ATLAS.md) for detailed examples
+
+**Option B: MCP Server** (For Claude Desktop, Cline, etc.)
 1. Install dependencies: `cd mcp-server && npm install`
-2. Add to Claude Desktop config (see [mcp-server/QUICKSTART.md](mcp-server/QUICKSTART.md))
-3. Restart Claude
+2. Add to your AI's MCP config (see [mcp-server/QUICKSTART.md](mcp-server/QUICKSTART.md))
+3. Restart your AI tool
 4. Open Midjourney.com - extension auto-connects!
 
-Now Claude can submit prompts, check status, and control your queue automatically!
+Now AI can submit prompts, check status, and control your queue automatically!
 
-**Or use the simple REST API** (see Advanced Setup below)
+**💡 Perfect for ChatGPT**: Just tell it to POST to localhost:43110 - it'll handle everything!
 
 ## Usage
 
@@ -88,34 +97,37 @@ window.postMessage({
 
 ### Method 3: AI Assistant Integration
 
-#### Option A: MCP Server (Recommended for Claude)
+#### Option A: REST API (For ChatGPT, browser-based AI tools)
 
-The extension auto-connects to an MCP server if one is running. See [mcp-server/QUICKSTART.md](mcp-server/QUICKSTART.md).
+**Perfect for ChatGPT with Atlas browser or custom scripts!**
 
-Once set up, just tell Claude:
+1. Start the API server: `npm start` (from project root)
+2. Tell ChatGPT naturally:
+
+> "Generate 5 cyberpunk prompts and POST them to http://localhost:43110/submit-batch"
+
+or just:
+
+> "Send these to my Midjourney plugin at localhost:43110"
+
+ChatGPT can directly call the API to submit prompts for you!
+
+#### Option B: MCP Server (For Claude Desktop, Cline, etc.)
+
+The extension auto-connects to an MCP server if running. See [mcp-server/QUICKSTART.md](mcp-server/QUICKSTART.md).
+
+Once set up:
 > "Generate 5 prompts for fantasy landscapes and submit them to Midjourney"
 
-Claude will use the MCP tools to control your browser directly!
-
-#### Option B: REST API (For ChatGPT/Custom Scripts)
-
-**Note**: This requires the optional REST API server (see Advanced Setup below).
-
-Once the server is running, just tell ChatGPT naturally:
-
-> "Generate 5 cyberpunk prompts and send them to my Midjourney plugin"
-
-or
-
-> "Send this to Midjourney: a serene mountain landscape --ar 16:9"
-
-ChatGPT will automatically understand to use your local plugin API.
+Your AI assistant will use MCP tools to control your browser directly!
 
 ## Advanced: API Server Setup (Optional)
 
 **You don't need this for basic use!** The extension works perfectly without any server.
 
-If you want to integrate with ChatGPT or other external tools:
+### For ChatGPT Integration (Recommended!)
+
+ChatGPT with browser access (like Atlas) can directly interact with local APIs!
 
 1. Make sure you have [Node.js](https://nodejs.org/) installed
 2. Open Terminal (or Command Prompt on Windows)
@@ -125,16 +137,26 @@ If you want to integrate with ChatGPT or other external tools:
 
 The server will start on `http://localhost:43110` (localhost-only for security)
 
+Now just tell ChatGPT:
+> "Generate 10 sci-fi prompts and POST them to http://localhost:43110/submit-batch as JSON"
+
+ChatGPT will automatically format and submit them!
+
 **🔒 Security Note**: The server only accepts connections from your own computer (localhost). It's not accessible from your network or the internet, making it safe to run.
 
 ### API Endpoints
 
 - `POST /submit` - Submit a single prompt
+  ```json
+  {"prompt": "your prompt here"}
+  ```
 - `POST /submit-batch` - Submit multiple prompts
+  ```json
+  {"prompts": ["prompt1", "prompt2", "prompt3"]}
+  ```
 - `GET /queue` - View current queue
 - `DELETE /queue` - Clear queue
-
-See [API Documentation](docs/API.md) for detailed usage.
+- `GET /` - Health check
 
 ## Configuration
 
