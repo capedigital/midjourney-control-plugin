@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Midjourney Control</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🎨 Midjourney Control</h1>
+    </header>
+
+    <section class="status">
+      <div class="status-item">
+        <span class="label">Queue:</span>
+        <span id="queue-count" class="value">0</span>
+      </div>
+      <div class="status-item">
+        <span class="label">Status:</span>
+        <span id="status" class="value">Idle</span>
+      </div>
+    </section>
+
+    <section class="controls">
+      <div class="input-group">
+        <label for="delay-input">Delay (seconds):</label>
+        <input type="number" id="delay-input" min="5" max="120" value="20">
+      </div>
+
+      <div class="checkbox-group">
+        <label>
+          <input type="checkbox" id="auto-submit" checked>
+          Auto-submit prompts
+        </label>
+      </div>
+
+      <div class="button-group">
+        <button id="start-btn" class="btn btn-primary">Start Queue</button>
+        <button id="stop-btn" class="btn btn-secondary">Stop</button>
+        <button id="clear-btn" class="btn btn-danger">Clear Queue</button>
+      </div>
+    </section>
+
+    <section class="queue-section">
+      <h2>Prompt Queue</h2>
+      <div id="queue-list" class="queue-list">
+        <p class="empty-message">No prompts in queue</p>
+      </div>
+    </section>
+
+    <section class="add-prompt">
+      <h2>Add Prompt Manually</h2>
+      <textarea id="prompt-input" placeholder="Enter your Midjourney prompt here..."></textarea>
+      <button id="add-prompt-btn" class="btn btn-primary">Add to Queue</button>
+    </section>
+
+    <footer>
+      <p class="tip">💡 Tip: Use the local API server to send prompts from ChatGPT or other tools</p>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
