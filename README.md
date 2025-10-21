@@ -1,38 +1,55 @@
 # 🎨 Midjourney Control Plugin
 
-> **Automate your Midjourney workflow with intelligent queue management and AI assistant integration**
+> **Automate your Midjourney workflow with intelligent queue management**
 
-A powerful browser extension that lets you automate Midjourney prompt submissions with queue management, delay controls, and an optional local API server for integration with ChatGPT and other AI tools.
+A Chrome extension that automates Midjourney prompt submissions with queue management and smart delays. **Works completely standalone** - no server, terminal, or command line needed!
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Chrome Extension](https://img.shields.io/badge/Chrome-Extension-blue.svg)](https://www.google.com/chrome/)
+[![No Server Required](https://img.shields.io/badge/Server-Optional-green.svg)](https://github.com/capedigital/midjourney-control-plugin)
 
-## 🎥 Demo
+## 🎥 How It Works
 
-*Submit multiple AI-generated prompts to Midjourney automatically with configurable delays*
+1. Install the extension in Chrome (3 clicks, no terminal!)
+2. Go to Midjourney.com
+3. Add prompts via the popup or browser console
+4. Watch them submit automatically with smart delays
+
+**That's it!** Optionally enable API server for ChatGPT integration.
 
 ## Features
 
 ✨ **Queue Management** - Add multiple prompts and process them automatically  
 ⏱️ **Smart Delays** - Configurable delays between submissions (5-120 seconds)  
 🎯 **Auto-Submit** - Automatically processes queue or manual control  
-🌐 **Local API** - REST API for external tools to submit prompts  
 📊 **Status UI** - Visual popup showing queue status and progress  
-🔄 **Page Messaging** - Direct browser console integration  
+🔄 **Browser Console** - Direct integration via developer console  
+💾 **Persistent Storage** - Queue survives browser restarts  
+🎨 **Zero Setup** - Works immediately, no server or terminal needed  
+🌐 **Optional API** - Advanced users can enable ChatGPT integration  
 
 ## Installation
 
-### 1. Load the Extension
+### Simple Installation (No Command Line Required!)
 
-1. Open Chrome and go to `chrome://extensions/`
-2. Enable "Developer mode" (top right)
-3. Click "Load unpacked"
-4. Select the `Midjourney Control Plugin` folder
-5. The extension icon should appear in your toolbar
+1. **Download the Extension**
+   - Download the latest release ZIP from [Releases](https://github.com/capedigital/midjourney-control-plugin/releases)
+   - OR download this repository as ZIP
 
-### 2. Set Up the Local API Server (Optional)
+2. **Extract the ZIP** to a folder on your computer
 
-The local server allows ChatGPT and other tools to send prompts to your browser.
+3. **Load in Chrome**
+   - Open Chrome and go to `chrome://extensions/`
+   - Enable "Developer mode" (toggle in top right)
+   - Click "Load unpacked"
+   - Select the extracted folder
+   - Done! The extension icon appears in your toolbar
+
+**That's it!** The extension works completely standalone. No server, no terminal, no npm needed.
+
+### Optional: API Server for Advanced Users
+
+If you want ChatGPT or other tools to send prompts automatically, you can optionally run the local API server:
 
 ```bash
 cd "Midjourney Control Plugin"
@@ -40,52 +57,39 @@ npm install
 npm start
 ```
 
-The server will start on `http://localhost:43110`
+**But this is 100% optional!** The extension works great without it.
 
 ## Usage
 
-### Method 1: Browser Extension Popup
+### Basic Usage (No Setup Required)
+
+#### Method 1: Extension Popup
 
 1. Click the extension icon in your toolbar
 2. Enter a prompt in the text area
 3. Click "Add to Queue"
-4. Adjust delay settings if needed
-5. Click "Start Queue" or enable "Auto-submit"
+4. Prompts submit automatically with your configured delay
 
-### Method 2: Browser Console (Direct Injection)
+#### Method 2: Browser Console
 
 Open the browser console on midjourney.com and use:
 
 ```javascript
-// Send via window message
+// Quick inject
+MCPInject("a serene mountain landscape --ar 16:9");
+
+// Add to queue via window message
 window.postMessage({ 
   type: "MCP_SUBMIT_PROMPT", 
-  prompt: "a serene mountain landscape --ar 16:9" 
+  prompt: "a cyberpunk city at night --v 6" 
 }, "*");
-
-// Or use the direct function
-MCPInject("a cyberpunk city at night --v 6");
 ```
 
-### Method 3: Local API Server
+### Method 3: ChatGPT Integration (Requires Optional API Server)
 
-Send prompts from any tool via HTTP:
+**Note**: This feature requires the optional API server to be running (see Advanced Setup below).
 
-```bash
-# Single prompt
-curl -X POST http://localhost:43110/submit \
-  -H "Content-Type: application/json" \
-  -d '{"prompt":"a magical forest with glowing mushrooms --ar 16:9"}'
-
-# Multiple prompts
-curl -X POST http://localhost:43110/submit-batch \
-  -H "Content-Type: application/json" \
-  -d '{"prompts":["prompt 1", "prompt 2", "prompt 3"]}'
-```
-
-### Method 4: ChatGPT Integration
-
-Just tell ChatGPT naturally:
+Once the server is running, just tell ChatGPT naturally:
 
 > "Generate 5 cyberpunk prompts and send them to my Midjourney plugin"
 
@@ -93,38 +97,30 @@ or
 
 > "Send this to Midjourney: a serene mountain landscape --ar 16:9"
 
-ChatGPT will automatically understand to use your local plugin API. No need to specify URLs or formats!
+ChatGPT will automatically understand to use your local plugin API.
 
-## API Endpoints
+## Advanced: API Server Setup (Optional)
 
-### `GET /`
-Health check and status
+**You don't need this for basic use!** The extension works perfectly without any server.
 
-### `POST /submit`
-Submit a single prompt
-```json
-{
-  "prompt": "your midjourney prompt here"
-}
-```
+If you want to integrate with ChatGPT or other external tools:
 
-### `POST /submit-batch`
-Submit multiple prompts
-```json
-{
-  "prompts": [
-    "prompt 1",
-    "prompt 2",
-    "prompt 3"
-  ]
-}
-```
+1. Make sure you have [Node.js](https://nodejs.org/) installed
+2. Open Terminal (or Command Prompt on Windows)
+3. Navigate to the extension folder
+4. Run: `npm install` (first time only)
+5. Run: `npm start`
 
-### `GET /queue`
-View current queue
+The server will start on `http://localhost:43110`
 
-### `DELETE /queue`
-Clear all queued prompts
+### API Endpoints
+
+- `POST /submit` - Submit a single prompt
+- `POST /submit-batch` - Submit multiple prompts
+- `GET /queue` - View current queue
+- `DELETE /queue` - Clear queue
+
+See [API Documentation](docs/API.md) for detailed usage.
 
 ## Configuration
 

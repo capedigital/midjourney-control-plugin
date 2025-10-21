@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Midjourney Control Plugin - API Tester</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    .container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      max-width: 600px;
+      width: 100%;
+      padding: 30px;
+    }
+    
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+    }
+    
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+    }
+    
+    .status {
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+    
+    .status.checking {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    
+    .status.online {
+      background: #d1fae5;
+      color: #065f46;
+    }
+    
+    .status.offline {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    
+    .section {
+      margin-bottom: 30px;
+    }
+    
+    h2 {
+      font-size: 18px;
+      color: #333;
+      margin-bottom: 15px;
+    }
+    
+    textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 14px;
+      resize: vertical;
+      margin-bottom: 10px;
+    }
+    
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    
+    button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-right: 10px;
+      transition: all 0.2s;
+    }
+    
+    button:hover {
+      background: #5568d3;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    button.secondary {
+      background: #e0e0e0;
+      color: #333;
+    }
+    
+    button.secondary:hover {
+      background: #d0d0d0;
+    }
+    
+    .response {
+      background: #f5f5f5;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 15px;
+      margin-top: 15px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      white-space: pre-wrap;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    
+    .examples {
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 6px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    
+    .examples code {
+      background: #e0e0e0;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+    }
+    
+    .quick-tests {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    
+    .quick-tests button {
+      margin: 0;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎨 API Tester</h1>
+    <p class="subtitle">Test your Midjourney Control Plugin API</p>
+    
+    <div id="server-status" class="status checking">
+      ⏳ Checking server status...
+    </div>
+    
+    <div class="section">
+      <h2>Single Prompt Test</h2>
+      <textarea id="single-prompt" placeholder="Enter a single Midjourney prompt...">a serene mountain landscape at sunset --ar 16:9</textarea>
+      <button onclick="sendSinglePrompt()">Send Single Prompt</button>
+      <div id="single-response" class="response" style="display:none;"></div>
+    </div>
+    
+    <div class="section">
+      <h2>Batch Prompts Test</h2>
+      <textarea id="batch-prompts" placeholder="Enter prompts (one per line)...">a cyberpunk city at night --ar 16:9
+a magical forest with glowing mushrooms
+a dragon flying over a medieval castle
+an astronaut exploring an alien planet</textarea>
+      <button onclick="sendBatchPrompts()">Send Batch</button>
+      <div id="batch-response" class="response" style="display:none;"></div>
+    </div>
+    
+    <div class="section">
+      <h2>Quick Tests</h2>
+      <div class="quick-tests">
+        <button class="secondary" onclick="getQueue()">Get Queue</button>
+        <button class="secondary" onclick="clearQueue()">Clear Queue</button>
+        <button class="secondary" onclick="healthCheck()">Health Check</button>
+        <button class="secondary" onclick="send5Prompts()">Send 5 Test Prompts</button>
+      </div>
+      <div id="quick-response" class="response" style="display:none;"></div>
+    </div>
+    
+    <div class="examples">
+      <strong>💡 Usage Examples:</strong><br>
+      <code>POST http://localhost:43110/submit</code> - Single prompt<br>
+      <code>POST http://localhost:43110/submit-batch</code> - Multiple prompts<br>
+      <code>GET http://localhost:43110/queue</code> - View queue<br>
+      <code>GET http://localhost:43110/</code> - Health check
+    </div>
+  </div>
+  
+  <script>
+    const API_URL = 'http://localhost:43110';
+    
+    // Check server status on load
+    async function checkServerStatus() {
+      const statusEl = document.getElementById('server-status');
+      try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        statusEl.className = 'status online';
+        statusEl.textContent = `✅ Server is ${data.status} - Queue: ${data.queueLength} prompts`;
+      } catch (error) {
+        statusEl.className = 'status offline';
+        statusEl.textContent = '❌ Server is offline. Run: npm start';
+      }
+    }
+    
+    // Send single prompt
+    async function sendSinglePrompt() {
+      const prompt = document.getElementById('single-prompt').value.trim();
+      const responseEl = document.getElementById('single-response');
+      
+      if (!prompt) {
+        alert('Please enter a prompt');
+        return;
+      }
+      
+      try {
+        const response = await fetch(`${API_URL}/submit`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompt })
+        });
+        
+        const data = await response.json();
+        responseEl.textContent = JSON.stringify(data, null, 2);
+        responseEl.style.display = 'block';
+        checkServerStatus();
+      } catch (error) {
+        responseEl.textContent = `Error: ${error.message}`;
+        responseEl.style.display = 'block';
+      }
+    }
+    
+    // Send batch prompts
+    async function sendBatchPrompts() {
+      const promptsText = document.getElementById('batch-prompts').value.trim();
+      const responseEl = document.getElementById('batch-response');
+      
+      if (!promptsText) {
+        alert('Please enter at least one prompt');
+        return;
+      }
+      
+      const prompts = promptsText.split('\n').filter(p => p.trim());
+      
+      try {
+        const response = await fetch(`${API_URL}/submit-batch`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompts })
+        });
+        
+        const data = await response.json();
+        responseEl.textContent = JSON.stringify(data, null, 2);
+        responseEl.style.display = 'block';
+        checkServerStatus();
+      } catch (error) {
+        responseEl.textContent = `Error: ${error.message}`;
+        responseEl.style.display = 'block';
+      }
+    }
+    
+    // Get queue
+    async function getQueue() {
+      const responseEl = document.getElementById('quick-response');
+      try {
+        const response = await fetch(`${API_URL}/queue`);
+        const data = await response.json();
+        responseEl.textContent = JSON.stringify(data, null, 2);
+        responseEl.style.display = 'block';
+      } catch (error) {
+        responseEl.textContent = `Error: ${error.message}`;
+        responseEl.style.display = 'block';
+      }
+    }
+    
+    // Clear queue
+    async function clearQueue() {
+      if (!confirm('Clear the queue?')) return;
+      
+      const responseEl = document.getElementById('quick-response');
+      try {
+        const response = await fetch(`${API_URL}/queue`, { method: 'DELETE' });
+        const data = await response.json();
+        responseEl.textContent = JSON.stringify(data, null, 2);
+        responseEl.style.display = 'block';
+        checkServerStatus();
+      } catch (error) {
+        responseEl.textContent = `Error: ${error.message}`;
+        responseEl.style.display = 'block';
+      }
+    }
+    
+    // Health check
+    async function healthCheck() {
+      const responseEl = document.getElementById('quick-response');
+      try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        responseEl.textContent = JSON.stringify(data, null, 2);
+        responseEl.style.display = 'block';
+      } catch (error) {
+        responseEl.textContent = `Error: ${error.message}`;
+        responseEl.style.display = 'block';
+      }
+    }
+    
+    // Send 5 test prompts
+    async function send5Prompts() {
+      const prompts = [
+        'a futuristic cityscape with flying cars',
+        'a cozy coffee shop on a rainy day',
+        'a majestic lion in the savanna',
+        'a steampunk airship in the clouds',
+        'a peaceful zen garden with koi pond'
+      ];
+      
+      const responseEl = document.getElementById('quick-response');
+      try {
+        const response = await fetch(`${API_URL}/submit-batch`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prompts })
+        });
+        
+        const data = await response.json();
+        responseEl.textContent = JSON.stringify(data, null, 2);
+        responseEl.style.display = 'block';
+        checkServerStatus();
+      } catch (error) {
+        responseEl.textContent = `Error: ${error.message}`;
+        responseEl.style.display = 'block';
+      }
+    }
+    
+    // Check status on load
+    checkServerStatus();
+    setInterval(checkServerStatus, 5000); // Refresh every 5 seconds
+  </script>
+</body>
+</html>
