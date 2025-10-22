@@ -5,6 +5,10 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
+    "start:automation": "node server-automation.js",
+    "start:multi": "node server-multi.js midjourney ideogram",
+    "start:midjourney": "node server-multi.js midjourney",
+    "start:ideogram": "node server-multi.js ideogram",
     "dev": "nodemon server.js"
   },
   "keywords": [

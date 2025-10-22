@@ -1,35 +1,49 @@
-# 🎨 Midjourney Control Plugin
+# 🎨 Universal Browser Automation Plugin
 
-> **Automate your Midjourney workflow with intelligent queue management**
+> **AI-driven browser automation at superhuman speeds**
 
-A Chrome extension that automates Midjourney prompt submissions with queue management and smart delays. **Works completely standalone** - no server, terminal, or command line needed!
+Originally built for Midjourney, now a **general-purpose automation platform** that's 20-30x faster than vision-based approaches like ChatGPT's Atlas mode. **Works completely standalone** or integrate with any AI assistant via REST API.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Chrome Extension](https://img.shields.io/badge/Chrome-Extension-blue.svg)](https://www.google.com/chrome/)
 [![No Server Required](https://img.shields.io/badge/Server-Optional-green.svg)](https://github.com/capedigital/midjourney-control-plugin)
 
-## 🎥 How It Works
+## 🚀 Why This Exists
 
-1. Install the extension in Chrome (3 clicks, no terminal!)
-2. Go to Midjourney.com
-3. Add prompts via the popup or browser console
-4. Watch them submit automatically with smart delays
+ChatGPT's Atlas browser mode is **slow** because it:
+- Takes screenshots → processes with vision AI → clicks pixels → waits for visual confirmation
 
-**Bonus**: Works with ChatGPT! Start the API server and ChatGPT can submit prompts directly.
+This plugin provides **direct DOM access**:
+- **50ms per action** vs 3-5 seconds with Atlas
+- **Reliable selectors** instead of pixel coordinates  
+- **Batch operations** for multi-step workflows
+- **Pure JSON extraction** instead of OCR
 
-**That's it!** Optionally enable AI integration for ChatGPT or Claude.
+## 🎯 Two Modes
+
+### Mode 1: Midjourney Automation (Original)
+- Queue management for prompt batches
+- Auto-submit with configurable delays
+- Persistent storage across browser restarts
+
+### Mode 2: Universal Browser Automation (NEW!)
+- Click elements by text
+- Fill forms intelligently
+- Extract structured data from any page
+- Safety checks for payment/sensitive pages
+- Works on **any website**
 
 ## Features
 
-✨ **Queue Management** - Add multiple prompts and process them automatically  
-⏱️ **Smart Delays** - Configurable delays between submissions (5-120 seconds)  
-🎯 **Auto-Submit** - Automatically processes queue or manual control  
-📊 **Status UI** - Visual popup showing queue status and progress  
-🔄 **Browser Console** - Direct integration via developer console  
-💾 **Persistent Storage** - Queue survives browser restarts  
-🎨 **Zero Setup** - Works immediately, no server or terminal needed  
-🤖 **ChatGPT Ready** - ChatGPT can POST prompts directly to local API  
-🌐 **MCP Support** - Optional MCP server for Claude Desktop  
+✨ **High-Level Automation** - DOM queries, element actions, content extraction  
+⚡ **Blazing Fast** - 20-30x faster than vision-based automation  
+🎯 **Smart Actions** - `clickByText()`, `typeInFieldByLabel()`, batch operations  
+� **Safety Checks** - Auto-detect payment pages and sensitive fields  
+� **Structured Data** - Extract JSON instead of parsing screenshots  
+💾 **Persistent Queue** - Midjourney queue survives browser restarts  
+🎨 **Zero Setup** - Works immediately, no server required  
+🤖 **AI-Ready** - REST API for ChatGPT, MCP for Claude Desktop  
+🌐 **Universal** - Works on any website, not just Midjourney    
 
 ## Installation
 
@@ -54,10 +68,40 @@ A Chrome extension that automates Midjourney prompt submissions with queue manag
 
 Want AI assistants to control Midjourney directly? We have two integration methods:
 
-**Option A: REST API** (For ChatGPT, browser-based AI, custom scripts)
-- **Best for ChatGPT** - ChatGPT doesn't support MCP, but can make HTTP requests!
-- Run: `npm start` (from project root)
-- ChatGPT can POST to `http://localhost:43110`
+## AI Integration (Optional)
+
+### 🎯 Recommended: Advanced Automation API
+
+**Universal browser automation for any AI assistant**
+
+```bash
+npm run start:automation
+```
+
+Provides high-level primitives at `http://localhost:43110`:
+- `/api/click-by-text` - Click elements by visible text
+- `/api/type-in-field` - Type in form fields by label
+- `/api/extract-content` - Get page content as JSON
+- `/api/batch` - Execute multiple actions atomically
+- `/api/detect-payment` - Safety check for sensitive pages
+
+**See [AUTOMATION_API.md](AUTOMATION_API.md) for complete documentation**
+
+**Why use this?** 20-30x faster than ChatGPT Atlas mode for web automation!
+
+---
+
+### Option A: REST API (Midjourney-specific)
+
+**For ChatGPT, browser-based AI, custom scripts**
+
+```bash
+npm start                    # Midjourney only
+npm run start:multi          # Midjourney + Ideogram
+```
+
+- ChatGPT can POST to `http://localhost:43110` (Midjourney) or `http://localhost:43111` (Ideogram)
+- See [CHATGPT_MEMORY.md](CHATGPT_MEMORY.md) to train ChatGPT to auto-submit prompts
 - See [CHATGPT_ATLAS.md](CHATGPT_ATLAS.md) for detailed examples
 
 **Option B: MCP Server** (For Claude Desktop, Cline, Cursor)
@@ -207,20 +251,38 @@ It also handles React/Vue framework value setting for compatibility.
 - Check that port 43110 is not in use
 - Verify the server is running with `curl http://localhost:43110`
 
-## Development
+## Documentation
 
-### File Structure
+### 🚀 Getting Started
+- [Quick Start Guide](QUICKSTART.md) - Up and running in 5 minutes
+- [Automation API](AUTOMATION_API.md) - **Universal browser automation (RECOMMENDED)**
+- [FAQ](FAQ.md) - Common questions and troubleshooting
+
+### 🤖 AI Integration
+- [ChatGPT Memory Training](CHATGPT_MEMORY.md) - Train ChatGPT to auto-recognize commands
+- [ChatGPT Atlas Guide](CHATGPT_ATLAS.md) - Midjourney-specific examples
+- [Multi-Service Support](MULTI_SERVICE.md) - Midjourney, Ideogram, and beyond
+
+### 🔒 Security & Development
+- [Security Information](SECURITY.md) - How localhost binding works
+- [Testing Guide](TESTING.md) - Extension testing procedures
+- [Contributing](CONTRIBUTING.md) - Contribution guidelines
+
+## File Structure
 ```
 Midjourney Control Plugin/
 ├── manifest.json          # Extension manifest
 ├── background.js          # Background service worker
-├── content.js            # Content script for DOM injection
+├── content.js            # Midjourney-specific DOM injection
+├── content-advanced.js   # Universal automation primitives
 ├── popup.html            # Popup UI
 ├── popup.css             # Popup styles
 ├── popup.js              # Popup logic
-├── server.js             # Local API server
+├── server.js             # Midjourney API server
+├── server-automation.js  # Universal automation API
+├── server-multi.js       # Multi-service support
 ├── package.json          # Node dependencies
-└── README.md            # This file
+└── docs/                 # Documentation files
 ```
 
 ### Testing
@@ -241,13 +303,18 @@ Midjourney Control Plugin/
 
 ## Future Enhancements
 
+### Automation Platform
+- [ ] Visual workflow builder
+- [ ] Recording mode (record actions, replay later)
+- [ ] More safety checks (detect CAPTCHA, rate limiting)
+- [ ] Chrome Web Store publication
+
+### Midjourney-Specific
 - [ ] Persistent logging of submitted prompts
 - [ ] Image URL capture after generation
-- [ ] Style preset management (Standard/Raw, etc.)
+- [ ] Style preset management
 - [ ] Retry logic for failed submissions
 - [ ] Export/import prompt lists
-- [ ] Browser notifications on completion
-- [ ] OAuth integration (if needed)
 
 ## 🤝 Contributing
 

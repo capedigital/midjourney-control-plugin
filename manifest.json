@@ -11,7 +11,12 @@
   "content_scripts": [
     {
       "matches": ["https://www.midjourney.com/*"],
-      "js": ["content.js"],
+      "js": ["content.js", "content-advanced.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content-advanced.js"],
       "run_at": "document_idle"
     }
   ],
